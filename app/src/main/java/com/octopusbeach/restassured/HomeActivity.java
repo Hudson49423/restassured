@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -16,12 +18,12 @@ import com.octopusbeach.restassured.model.Item;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class HomeActivity extends ActionBarActivity {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ListView list;
 
@@ -36,7 +38,7 @@ public class HomeActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                toolbar.setTitle("Home");
+                toolbar.setTitle("Reminders");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
@@ -54,6 +56,9 @@ public class HomeActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
+                getResources().getStringArray(R.array.nav_items)));
 
         //TODO dummy data
         Item item = new Item("Turn Off The Stove", Calendar.getInstance());
@@ -73,6 +78,17 @@ public class HomeActivity extends ActionBarActivity {
         list.setAdapter(new ItemAdapter(this, R.id.list_item, data));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(list);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(HomeActivity.this)
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel", null)
+                        .setView(R.layout.new_item)
+                        .setPositiveButton("Save", null)
+                        .show();
+            }
+        });
     }
 
     @Override

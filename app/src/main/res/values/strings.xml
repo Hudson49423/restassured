@@ -17,4 +17,11 @@
     <string name="completed_header">Last Completed: </string>
 
     <string name="action_example">Example action</string>
+
+    <string-array name="nav_items">
+        <item>Help</item>
+        <item>Clear Reminders</item>
+        <item>Settings</item>
+        <item>Donate</item>
+    </string-array>
 </resources>

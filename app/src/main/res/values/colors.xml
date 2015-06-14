@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="PrimaryBlue">#2196F3</color>
+    <color name="PrimaryPressed">#f50057</color>
+    <color name="Accent">#ff4081</color>
+
 </resources>

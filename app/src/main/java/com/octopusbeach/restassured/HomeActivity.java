@@ -11,7 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.octopusbeach.restassured.model.Item;
@@ -19,18 +23,31 @@ import com.octopusbeach.restassured.model.Item;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 public class HomeActivity extends ActionBarActivity {
 
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private ListView drawerList;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @InjectView(R.id.left_drawer)
+    ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
-    private ListView list;
+    @InjectView(R.id.list)
+    ListView list;
+
+
+    @InjectView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.inject(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.drawer_open, R.string.drawer_close) {
@@ -52,11 +69,9 @@ public class HomeActivity extends ActionBarActivity {
 
         // Set the drawer toggle as the DrawerListener
         drawerLayout.setDrawerListener(drawerToggle);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
                 getResources().getStringArray(R.array.nav_items)));
 
@@ -74,21 +89,10 @@ public class HomeActivity extends ActionBarActivity {
         data.add(item1);
         data.add(item2);
 
-        list = (ListView) findViewById(R.id.list);
         list.setAdapter(new ItemAdapter(this, R.id.list_item, data));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(list);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(HomeActivity.this)
-                        .setCancelable(true)
-                        .setNegativeButton("Cancel", null)
-                        .setView(R.layout.new_item)
-                        .setPositiveButton("Save", null)
-                        .show();
-            }
-        });
+
     }
 
     @Override
@@ -115,5 +119,52 @@ public class HomeActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.fab)
+    void newItem() {
+        AlertDialog ad = new AlertDialog.Builder(HomeActivity.this)
+                .setCancelable(true)
+                .setNegativeButton("Cancel", null)
+                .setView(R.layout.new_item)
+                .setPositiveButton("Save", null)
+                .show();
+
+
+        final CheckBox repeatBox = (CheckBox) ad.findViewById(R.id.repeat_checkbox);
+        ad.findViewById(R.id.repeat_text).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repeatBox.setChecked(!repeatBox.isChecked());
+                System.out.println("test");
+            }
+        });
+        final RelativeLayout rl = (RelativeLayout) ad.findViewById(R.id.remind_layout);
+        Spinner daySpinner = (Spinner) ad.findViewById(R.id.spinner_day);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.date_items,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        daySpinner.setAdapter(adapter);
+        Spinner timeSpinner = (Spinner) ad.findViewById(R.id.spinner_time);
+        ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this, R.array.time_items,
+                android.R.layout.simple_spinner_item);
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        timeSpinner.setAdapter(timeAdapter);
+        final Button cancelReminder = (Button) ad.findViewById(R.id.cancel_reminder);
+        cancelReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rl.setVisibility(View.GONE);
+                cancelReminder.setVisibility(View.GONE);
+            }
+        });
+        ad.findViewById(R.id.remind_me).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rl.setVisibility(View.VISIBLE);
+                cancelReminder.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 }

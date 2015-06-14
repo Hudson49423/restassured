@@ -17,11 +17,28 @@
     <string name="completed_header">Last Completed: </string>
 
     <string name="action_example">Example action</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="new_item">New Item</string>
+    <string name="repeat">Repeat</string>
+    <string name="remind_me">Remind Me</string>
+    <string name="x">x</string>
+
 
     <string-array name="nav_items">
         <item>Help</item>
         <item>Clear Reminders</item>
         <item>Settings</item>
         <item>Donate</item>
+    </string-array>
+
+    <string-array name="date_items">
+        <item>Today</item>
+        <item>Tomorrow</item>
+    </string-array>
+    <string-array name="time_items">
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Night</item>
     </string-array>
 </resources>

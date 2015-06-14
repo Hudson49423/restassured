@@ -4,9 +4,85 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Title Here" />
+        android:background="@color/PrimaryBlue"
+        android:gravity="center"
+        android:padding="16sp"
+        android:text="@string/new_item"
+        android:textColor="#000000"
+        android:textSize="26sp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_title"
+        android:padding="16sp"
+        android:textSize="20sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="14sp">
+
+        <TextView
+            android:id="@+id/repeat_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="@string/repeat"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/repeat_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="14sp">
+
+        <TextView
+            android:id="@+id/remind_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="@string/remind_me"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <Button android:id="@+id/cancel_reminder"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:background="@drawable/cancel_button"
+            android:layout_alignParentRight="true"
+            android:text="@string/x"
+            android:textColor="#ffffff"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/remind_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="14sp"
+        android:visibility="gone">
+
+        <Spinner
+            android:id="@+id/spinner_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/spinner_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/spinner_day" />
+    </RelativeLayout>
 
 </LinearLayout>

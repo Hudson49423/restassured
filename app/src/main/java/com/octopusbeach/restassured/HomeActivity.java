@@ -12,6 +12,11 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.melnykov.fab.FloatingActionButton;
+import com.octopusbeach.restassured.model.Item;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -50,7 +55,22 @@ public class HomeActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        //TODO dummy data
+        Item item = new Item("Turn Off The Stove", Calendar.getInstance());
+        Calendar c2 = Calendar.getInstance();
+        c2.add(Calendar.DATE, -1);
+        Item item1 = new Item("Turn Off The Stove", c2);
+        Calendar c3 = Calendar.getInstance();
+        c3.add(Calendar.DATE, -100);
+        Item item2 = new Item("Turn Off The Stove", c3);
+
+        ArrayList<Item> data = new ArrayList<>();
+        data.add(item);
+        data.add(item1);
+        data.add(item2);
+
         list = (ListView) findViewById(R.id.list);
+        list.setAdapter(new ItemAdapter(this, R.id.list_item, data));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(list);
     }

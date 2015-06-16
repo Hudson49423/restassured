@@ -1,5 +1,6 @@
 package com.octopusbeach.restassured;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -7,12 +8,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -36,18 +40,22 @@ public class HomeActivity extends ActionBarActivity {
     @InjectView(R.id.left_drawer)
     ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
-    @InjectView(R.id.list)
-    ListView list;
+    @InjectView(R.id.grid)
+    GridView gridView;
 
 
     @InjectView(R.id.fab)
     FloatingActionButton fab;
+
+    private ArrayList<Item> data;
+    private GridAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+        toolbar.setTitle("Reminders");
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.drawer_open, R.string.drawer_close) {
@@ -84,14 +92,42 @@ public class HomeActivity extends ActionBarActivity {
         c3.add(Calendar.DATE, -100);
         Item item2 = new Item("Turn Off The Stove", c3);
 
-        ArrayList<Item> data = new ArrayList<>();
+        data = new ArrayList<>();
         data.add(item);
         data.add(item1);
         data.add(item2);
 
-        list.setAdapter(new ItemAdapter(this, R.id.list_item, data));
+        adapter = new GridAdapter(this, R.layout.grid_item, data);
+        gridView.setAdapter(adapter);
+//        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                new AlertDialog.Builder(HomeActivity.this)
+//                        .setCancelable(true)
+//                        .setTitle("Delete this Reminder")
+//                        .setNegativeButton("Cancel", null)
+//                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                data.remove(i);
+//                                adapter.notifyDataSetChanged();
+//                            }
+//                        })
+//                        .show();
+//                System.out.println("test");
+//                return false;
+//            }
+//        });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println("test");
+                Log.d("test", "test");
+            }
+        });
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToListView(list);
+        fab.attachToListView(gridView);
 
     }
 
@@ -167,4 +203,5 @@ public class HomeActivity extends ActionBarActivity {
         });
 
     }
+
 }

@@ -6,30 +6,29 @@
     tools:context=".HomeActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
 
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"/>
-
         <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_below="@id/toolbar">
-            <!-- The main content view -->
-            <FrameLayout
-                android:id="@+id/content_frame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <!-- The navigation drawer -->
+
+            <GridView
+                android:id="@+id/grid"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:horizontalSpacing="10sp"
+                android:numColumns="2"
+                android:verticalSpacing="10sp" />
+
             <ListView
                 android:id="@+id/left_drawer"
                 android:layout_width="240dp"
@@ -49,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
+        android:focusable="false"
         android:src="@drawable/ic_action_new"
         fab:fab_colorNormal="@color/Accent"
         fab:fab_colorPressed="@color/PrimaryPressed" />

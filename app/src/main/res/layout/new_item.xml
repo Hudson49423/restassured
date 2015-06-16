@@ -62,7 +62,8 @@
             android:layout_alignParentRight="true"
             android:text="@string/x"
             android:textColor="#ffffff"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 
 

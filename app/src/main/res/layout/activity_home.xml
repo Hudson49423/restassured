@@ -25,9 +25,9 @@
                 android:layout_height="fill_parent"
                 android:clickable="true"
                 android:gravity="center"
-                android:horizontalSpacing="10sp"
+                android:horizontalSpacing="2sp"
                 android:numColumns="2"
-                android:verticalSpacing="10sp" />
+                android:verticalSpacing="2sp" />
 
             <ListView
                 android:id="@+id/left_drawer"

@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants">
+    android:padding="10sp"
+    android:id="@+id/parent"
+    android:background="@drawable/rounded_grid_item">
 
     <TextView
         android:id="@+id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:clickable="false"
         android:gravity="center_horizontal"
+        android:padding="8sp"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/last_completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_title"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:padding="4sp"
+        android:text="@string/completed_header"
         android:textSize="20sp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/last_completed"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:padding="4sp"
+        android:text="Today at 1:10 PM"
+        android:textColor="@color/primary_material_dark"
+        android:textSize="20sp" />
+
+
+</RelativeLayout>

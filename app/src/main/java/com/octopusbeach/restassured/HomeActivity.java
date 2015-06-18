@@ -100,33 +100,14 @@ public class HomeActivity extends ActionBarActivity {
 
         adapter = new GridAdapter(this, R.layout.grid_item, data);
         gridView.setAdapter(adapter);
-//        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                new AlertDialog.Builder(HomeActivity.this)
-//                        .setCancelable(true)
-//                        .setTitle("Delete this Reminder")
-//                        .setNegativeButton("Cancel", null)
-//                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                data.remove(i);
-//                                adapter.notifyDataSetChanged();
-//                            }
-//                        })
-//                        .show();
-//                System.out.println("test");
-//                return false;
-//            }
-//        });
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println("test");
-                Log.d("test", "test");
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                data.remove(i);
+                adapter.notifyDataSetChanged();
+                return false;
             }
         });
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(gridView);
 
@@ -214,7 +195,5 @@ public class HomeActivity extends ActionBarActivity {
                     }
                 })
                 .show();
-
     }
-
 }

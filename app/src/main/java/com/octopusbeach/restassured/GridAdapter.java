@@ -56,15 +56,19 @@ public class GridAdapter extends ArrayAdapter<Item> {
 
         title.setText(item.getName());
         Calendar date = item.getDate();
-        Calendar rightNow = Calendar.getInstance();
-        if (date.get(Calendar.DAY_OF_YEAR) == rightNow.get(Calendar.DAY_OF_YEAR)
-                && date.get(Calendar.YEAR) == rightNow.get(Calendar.YEAR)) // Today
-            completed.setText(" Today at " + new SimpleDateFormat("h:mm a").format(date.getTime()));
-        else if (date.get(Calendar.DAY_OF_YEAR) == (rightNow.get(Calendar.DAY_OF_YEAR) - 1)
-                && date.get(Calendar.YEAR) == rightNow.get(Calendar.YEAR))  // Yesterday
-            completed.setText(" Yesterday at " + new SimpleDateFormat("h:mm a").format(date.getTime()));
-        else
-            completed.setText(" " + new SimpleDateFormat("MMMM dd, h:mm a").format(date.getTime()));
+        if (date != null) { // This item has been completed.
+            Calendar rightNow = Calendar.getInstance();
+            if (date.get(Calendar.DAY_OF_YEAR) == rightNow.get(Calendar.DAY_OF_YEAR)
+                    && date.get(Calendar.YEAR) == rightNow.get(Calendar.YEAR)) // Today
+                completed.setText(" Today at " + new SimpleDateFormat("h:mm a").format(date.getTime()));
+            else if (date.get(Calendar.DAY_OF_YEAR) == (rightNow.get(Calendar.DAY_OF_YEAR) - 1)
+                    && date.get(Calendar.YEAR) == rightNow.get(Calendar.YEAR))  // Yesterday
+                completed.setText(" Yesterday at " + new SimpleDateFormat("h:mm a").format(date.getTime()));
+            else
+                completed.setText(" " + new SimpleDateFormat("MMMM dd, h:mm a").format(date.getTime()));
+        } else { // This item has not yet been completed.
+            completed.setText("Never");
+        }
 
         LayerDrawable bg = (LayerDrawable) v.findViewById(R.id.parent).getBackground();
         GradientDrawable bgShape = (GradientDrawable)bg.findDrawableByLayerId(R.id.background);

@@ -108,6 +108,13 @@ public class HomeActivity extends ActionBarActivity {
                 return false;
             }
         });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                data.get(i).setDate(Calendar.getInstance());
+                adapter.notifyDataSetChanged();
+            }
+        });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(gridView);
 
@@ -187,7 +194,7 @@ public class HomeActivity extends ActionBarActivity {
                         if (rl.getVisibility() == View.VISIBLE) {
                             // TODO this item is reminding.
                         } else {
-                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title)).getText().toString(), Calendar.getInstance());
+                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title)).getText().toString());
                             data.add(newItem);
                             adapter.notifyDataSetChanged();
                         }

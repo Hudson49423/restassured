@@ -9,9 +9,8 @@ public class Item {
     private String name;
     private Calendar completedDate;
 
-    public Item(String name, Calendar calendar) {
+    public Item(String name) {
         this.name = name;
-        completedDate = calendar;
     }
 
     public String getName() {

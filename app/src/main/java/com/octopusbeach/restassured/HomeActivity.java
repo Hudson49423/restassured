@@ -20,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.octopusbeach.restassured.model.Item;
@@ -159,34 +160,29 @@ public class HomeActivity extends ActionBarActivity {
 
     @OnClick(R.id.fab)
     void newItem() {
-        AlertDialog ad = new AlertDialog.Builder(HomeActivity.this)
-                .setCancelable(true)
-                .setNegativeButton("Cancel", null)
-                .setView(R.layout.new_item)
-                .setPositiveButton("Save", null)
-                .show();
+        final View v = getLayoutInflater().inflate(R.layout.new_item, null);
+        final CheckBox repeatBox = (CheckBox) v.findViewById(R.id.repeat_checkbox);
 
-
-        final CheckBox repeatBox = (CheckBox) ad.findViewById(R.id.repeat_checkbox);
-        ad.findViewById(R.id.repeat_text).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.repeat_text).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 repeatBox.setChecked(!repeatBox.isChecked());
                 System.out.println("test");
             }
         });
-        final RelativeLayout rl = (RelativeLayout) ad.findViewById(R.id.remind_layout);
-        Spinner daySpinner = (Spinner) ad.findViewById(R.id.spinner_day);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.date_items,
+
+        final RelativeLayout rl = (RelativeLayout) v.findViewById(R.id.remind_layout);
+        Spinner daySpinner = (Spinner) v.findViewById(R.id.spinner_day);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.date_items,
                 android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        daySpinner.setAdapter(adapter);
-        Spinner timeSpinner = (Spinner) ad.findViewById(R.id.spinner_time);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        daySpinner.setAdapter(spinnerAdapter);
+        Spinner timeSpinner = (Spinner) v.findViewById(R.id.spinner_time);
         ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this, R.array.time_items,
                 android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
-        final Button cancelReminder = (Button) ad.findViewById(R.id.cancel_reminder);
+        final Button cancelReminder = (Button) v.findViewById(R.id.cancel_reminder);
         cancelReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,13 +190,30 @@ public class HomeActivity extends ActionBarActivity {
                 cancelReminder.setVisibility(View.GONE);
             }
         });
-        ad.findViewById(R.id.remind_me).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.remind_me).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 rl.setVisibility(View.VISIBLE);
                 cancelReminder.setVisibility(View.VISIBLE);
             }
         });
+        new AlertDialog.Builder(HomeActivity.this)
+                .setCancelable(true)
+                .setNegativeButton("Cancel", null)
+                .setView(v)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (rl.getVisibility() == View.VISIBLE) {
+                            // TODO this item is reminding.
+                        } else {
+                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title)).getText().toString(), Calendar.getInstance());
+                            data.add(newItem);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .show();
 
     }
 

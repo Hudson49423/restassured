@@ -14,7 +14,7 @@
         android:textColor="#000000"
         android:textSize="26sp" />
 
-    <EditText
+    <EditText android:id="@+id/new_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/enter_title"

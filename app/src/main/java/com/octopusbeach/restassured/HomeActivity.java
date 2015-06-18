@@ -1,14 +1,15 @@
 package com.octopusbeach.restassured;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.johnpersano.supertoasts.SuperActivityToast;
+import com.github.johnpersano.supertoasts.SuperToast;
+import com.github.johnpersano.supertoasts.util.OnClickWrapper;
 import com.melnykov.fab.FloatingActionButton;
 import com.octopusbeach.restassured.model.Item;
 
@@ -50,6 +54,8 @@ public class HomeActivity extends ActionBarActivity {
 
     private ArrayList<Item> data;
     private GridAdapter adapter;
+    private Item deletedItem; // Holds the last delted Item so that it can be readded.
+    private int deletedItemIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,28 +89,22 @@ public class HomeActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
                 getResources().getStringArray(R.array.nav_items)));
-
-        //TODO dummy data
-        Item item = new Item("Turn Off The Stove", Calendar.getInstance());
-        Calendar c2 = Calendar.getInstance();
-        c2.add(Calendar.DATE, -1);
-        Item item1 = new Item("Turn Off The Stove", c2);
-        Calendar c3 = Calendar.getInstance();
-        c3.add(Calendar.DATE, -100);
-        Item item2 = new Item("Turn Off The Stove", c3);
-
         data = new ArrayList<>();
-        data.add(item);
-        data.add(item1);
-        data.add(item2);
-
         adapter = new GridAdapter(this, R.layout.grid_item, data);
         gridView.setAdapter(adapter);
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                deletedItem = data.get(i);
                 data.remove(i);
+                deletedItemIndex = i;
                 adapter.notifyDataSetChanged();
+                SuperActivityToast superActivityToast = new SuperActivityToast(HomeActivity.this, SuperToast.Type.BUTTON);
+                superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
+                superActivityToast.setText("Item Deleted.");
+                superActivityToast.setButtonIcon(SuperToast.Icon.Dark.UNDO, "UNDO");
+                superActivityToast.setOnClickWrapper(onClickWrapper);
+                superActivityToast.show();
                 return false;
             }
         });
@@ -148,7 +148,6 @@ public class HomeActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 repeatBox.setChecked(!repeatBox.isChecked());
-                System.out.println("test");
             }
         });
 
@@ -196,4 +195,16 @@ public class HomeActivity extends ActionBarActivity {
                 })
                 .show();
     }
+
+    OnClickWrapper onClickWrapper = new OnClickWrapper("superactivitytoast", new SuperToast.OnClickListener() {
+
+        @Override
+        public void onClick(View view, Parcelable token) {
+            if (deletedItem != null) {
+                data.add(deletedItemIndex, deletedItem);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+    });
 }

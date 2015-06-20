@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,7 +42,7 @@ public class HomeActivity extends ActionBarActivity {
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @InjectView(R.id.left_drawer)
-    ListView drawerList;
+    LinearLayout leftDrawer;
     private ActionBarDrawerToggle drawerToggle;
     @InjectView(R.id.grid)
     GridView gridView;
@@ -142,6 +142,7 @@ public class HomeActivity extends ActionBarActivity {
                         } else {
                             Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title))
                                     .getText().toString(), ColorPicker.getColor(HomeActivity.this));
+                            newItem.setIsRepeating(repeatBox.isChecked());
                             DBHelper db = new DBHelper(HomeActivity.this);
                             db.addItem(newItem);
                             data = db.getItems();
@@ -152,6 +153,15 @@ public class HomeActivity extends ActionBarActivity {
                     }
                 })
                 .show();
+    }
+
+    @OnClick(R.id.clear_reminders)
+    void clearReminders() {
+        new DBHelper(this).deleteAllItems();
+        adapter.clear();
+        data.clear();
+        adapter.notifyDataSetChanged();
+        drawerLayout.closeDrawers();
     }
 
     private void setUpGridView() {
@@ -183,14 +193,22 @@ public class HomeActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Item item = data.get(i);
-                item.setDate(Calendar.getInstance());
                 DBHelper db = new DBHelper(HomeActivity.this);
-                int newColor = item.getColor();
-                while (newColor == item.getColor())
-                    newColor = ColorPicker.getColor(HomeActivity.this);
-                item.setColor(newColor);
-                db.updateItem(item);
+                if (item.isRepeating()) {
+                    item.setDate(Calendar.getInstance());
+                    int newColor = item.getColor();
+                    while (newColor == item.getColor())
+                        newColor = ColorPicker.getColor(HomeActivity.this);
+                    item.setColor(newColor);
+                    db.updateItem(item);
+                } else {
+                    data.remove(i);
+                    db.deleteItem(item);
+                    adapter.clear();
+                    adapter.addAll(data);
+                }
                 adapter.notifyDataSetChanged();
+
             }
         });
     }
@@ -211,7 +229,7 @@ public class HomeActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                toolbar.setTitle("Navigation");
+                toolbar.setTitle("Help");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -221,8 +239,8 @@ public class HomeActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
-                getResources().getStringArray(R.array.nav_items)));
+//        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
+//                getResources().getStringArray(R.array.nav_items)));
     }
 
     // ----------------------- For Super Toasts ---------------------------------------------------

@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context=".HomeActivity">
 
     <RelativeLayout
@@ -29,15 +29,62 @@
                 android:numColumns="2"
                 android:verticalSpacing="2sp" />
 
-            <ListView
+            <LinearLayout
                 android:id="@+id/left_drawer"
                 android:layout_width="240dp"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_gravity="start"
                 android:background="#eee"
-                android:choiceMode="singleChoice"
-                android:divider="@color/PrimaryBlue"
-                android:dividerHeight="1dp" />
+                android:orientation="vertical"
+                android:padding="10sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="14sp"
+                    android:paddingTop="14sp"
+                    android:text="@string/app_description"
+                    android:textColor="#000000"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="14sp"
+                    android:paddingTop="14sp"
+                    android:text="@string/instructions"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="14sp"
+                    android:text="@string/repeating" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="14sp"
+                    android:text="@string/reminder" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button android:id="@+id/clear_reminders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/red"
+                        android:text="@string/remove_all" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
         </android.support.v4.widget.DrawerLayout>
     </RelativeLayout>
 

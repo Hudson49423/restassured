@@ -13,6 +13,7 @@ public class Item implements Serializable{
     private Calendar completedDate;
     private int id;
     private int color;
+    private boolean isRepeating;
 
     public Item(String name, int color) {
         this.name = name;
@@ -49,5 +50,13 @@ public class Item implements Serializable{
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public boolean isRepeating() {
+        return isRepeating;
+    }
+
+    public void setIsRepeating(boolean isRepeating) {
+        this.isRepeating = isRepeating;
     }
 }

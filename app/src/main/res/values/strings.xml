@@ -22,6 +22,11 @@
     <string name="repeat">Repeat</string>
     <string name="remind_me">Remind Me</string>
     <string name="x">x</string>
+    <string name="app_description">Rest Assured is meant to make your life easier.</string>
+    <string name="instructions">Add an item and stop trying to remember if you\'ve already completed it!</string>
+    <string name="repeating">Repeat = Item can be marked completed multiple times</string>
+    <string name="reminder">Remind Me = Receive a notification when it is time to complete this item</string>
+    <string name="remove_all">Clear Reminders</string>
 
 
     <string-array name="nav_items">

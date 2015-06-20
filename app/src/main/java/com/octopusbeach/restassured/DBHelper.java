@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
 
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static final String DATABASE_NAME = "itemsdb";
     private static final String TABLE_ITEMS = "items";
     private static final String COLUMN_ID = "_id";
@@ -48,6 +48,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
         sqLiteDatabase.execSQL(CREATE_DB);
+    }
+
+    public void deleteAllItems() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
+        sqLiteDatabase.execSQL(CREATE_DB);
+        sqLiteDatabase.close();
     }
 
     public ArrayList<Item> getItems() {

@@ -1,6 +1,5 @@
 package com.octopusbeach.restassured;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -89,15 +88,18 @@ public class HomeActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
                 getResources().getStringArray(R.array.nav_items)));
-        data = new ArrayList<>();
+        data = new DBHelper(this).getItems();
         adapter = new GridAdapter(this, R.layout.grid_item, data);
         gridView.setAdapter(adapter);
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 deletedItem = data.get(i);
-                data.remove(i);
-                deletedItemIndex = i;
+                DBHelper db = new DBHelper(HomeActivity.this);
+                db.deleteItem(deletedItem);
+                adapter.clear();
+                data = db.getItems();
+                adapter.addAll(data);
                 adapter.notifyDataSetChanged();
                 SuperActivityToast superActivityToast = new SuperActivityToast(HomeActivity.this, SuperToast.Type.BUTTON);
                 superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
@@ -195,7 +197,11 @@ public class HomeActivity extends ActionBarActivity {
                             // TODO this item is reminding.
                         } else {
                             Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title)).getText().toString());
-                            data.add(newItem);
+                            DBHelper db = new DBHelper(HomeActivity.this);
+                            db.addItem(newItem);
+                            data = db.getItems();
+                            adapter.clear();
+                            adapter.addAll(data);
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -208,7 +214,11 @@ public class HomeActivity extends ActionBarActivity {
         @Override
         public void onClick(View view, Parcelable token) {
             if (deletedItem != null) {
-                data.add(deletedItemIndex, deletedItem);
+                DBHelper db = new DBHelper(HomeActivity.this);
+                db.addItem(deletedItem);
+                adapter.clear();
+                data = db.getItems();
+                adapter.addAll(data);
                 adapter.notifyDataSetChanged();
             }
         }

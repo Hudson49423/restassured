@@ -1,5 +1,7 @@
 package com.octopusbeach.restassured.model;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -10,9 +12,11 @@ public class Item implements Serializable{
     private String name;
     private Calendar completedDate;
     private int id;
+    private int color;
 
-    public Item(String name) {
+    public Item(String name, int color) {
         this.name = name;
+        this.color = color;
     }
 
     public String getName() {
@@ -37,5 +41,9 @@ public class Item implements Serializable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

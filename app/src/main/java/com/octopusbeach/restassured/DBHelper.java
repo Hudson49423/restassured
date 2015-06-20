@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.octopusbeach.restassured.model.Item;
 
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
 
 
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final String DATABASE_NAME = "itemsdb";
     private static final String TABLE_ITEMS = "items";
     private static final String COLUMN_ID = "_id";

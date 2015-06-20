@@ -196,7 +196,8 @@ public class HomeActivity extends ActionBarActivity {
                         if (rl.getVisibility() == View.VISIBLE) {
                             // TODO this item is reminding.
                         } else {
-                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title)).getText().toString());
+                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title))
+                                    .getText().toString(), ColorPicker.getColor(HomeActivity.this));
                             DBHelper db = new DBHelper(HomeActivity.this);
                             db.addItem(newItem);
                             data = db.getItems();

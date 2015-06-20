@@ -21,25 +21,10 @@ import java.util.Random;
  * Created by hudson on 6/15/15.
  */
 public class GridAdapter extends ArrayAdapter<Item> {
-    private int[] colors;
-    private Random rand;
 
     public GridAdapter(Context context, int resource, List<Item> objects) {
         super(context, resource, objects);
-        Resources res = context.getResources();
-        colors = new int[]{
-                res.getColor(R.color.cyan),
-                res.getColor(R.color.yellow),
-                res.getColor(R.color.teal),
-                res.getColor(R.color.blue),
-                res.getColor(R.color.grey),
-                res.getColor(R.color.orange),
-                res.getColor(R.color.indigo),
-                res.getColor(R.color.pink),
-                res.getColor(R.color.purple),
-                res.getColor(R.color.red)
-        };
-        rand = new Random();
+
     }
 
     @Override
@@ -71,8 +56,8 @@ public class GridAdapter extends ArrayAdapter<Item> {
         }
 
         LayerDrawable bg = (LayerDrawable) v.findViewById(R.id.parent).getBackground();
-        GradientDrawable bgShape = (GradientDrawable)bg.findDrawableByLayerId(R.id.background);
-        bgShape.setColor(colors[rand.nextInt(colors.length)]);
+        GradientDrawable bgShape = (GradientDrawable) bg.findDrawableByLayerId(R.id.background);
+        bgShape.setColor(item.getColor());
         return v;
     }
 }

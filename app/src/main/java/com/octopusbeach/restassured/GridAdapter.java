@@ -1,7 +1,6 @@
 package com.octopusbeach.restassured;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import com.octopusbeach.restassured.model.Item;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by hudson on 6/15/15.

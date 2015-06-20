@@ -46,4 +46,8 @@ public class Item implements Serializable{
     public int getColor() {
         return color;
     }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 }

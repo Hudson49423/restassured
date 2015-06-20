@@ -54,72 +54,16 @@ public class HomeActivity extends ActionBarActivity {
     private ArrayList<Item> data;
     private GridAdapter adapter;
     private Item deletedItem; // Holds the last delted Item so that it can be readded.
-    private int deletedItemIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
-        toolbar.setTitle("Reminders");
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                toolbar.setTitle("Reminders");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                toolbar.setTitle("Navigation");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        drawerLayout.setDrawerListener(drawerToggle);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
-                getResources().getStringArray(R.array.nav_items)));
-        data = new DBHelper(this).getItems();
-        adapter = new GridAdapter(this, R.layout.grid_item, data);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                deletedItem = data.get(i);
-                DBHelper db = new DBHelper(HomeActivity.this);
-                db.deleteItem(deletedItem);
-                adapter.clear();
-                data = db.getItems();
-                adapter.addAll(data);
-                adapter.notifyDataSetChanged();
-                SuperActivityToast superActivityToast = new SuperActivityToast(HomeActivity.this, SuperToast.Type.BUTTON);
-                superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
-                superActivityToast.setText("Item Deleted.");
-                superActivityToast.setButtonIcon(SuperToast.Icon.Dark.UNDO, "UNDO");
-                superActivityToast.setOnClickWrapper(onClickWrapper);
-                superActivityToast.show();
-                return false;
-            }
-        });
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                data.get(i).setDate(Calendar.getInstance());
-                adapter.notifyDataSetChanged();
-            }
-        });
+        setUpDrawer();
+        setUpGridView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(gridView);
-
     }
 
     @Override
@@ -210,8 +154,79 @@ public class HomeActivity extends ActionBarActivity {
                 .show();
     }
 
-    OnClickWrapper onClickWrapper = new OnClickWrapper("superactivitytoast", new SuperToast.OnClickListener() {
+    private void setUpGridView() {
+        data = new DBHelper(this).getItems();
+        adapter = new GridAdapter(this, R.layout.grid_item, data);
+        gridView.setAdapter(adapter);
+        // Delete an Item.
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                deletedItem = data.get(i);
+                DBHelper db = new DBHelper(HomeActivity.this);
+                db.deleteItem(deletedItem);
+                adapter.clear();
+                data = db.getItems();
+                adapter.addAll(data);
+                adapter.notifyDataSetChanged();
+                SuperActivityToast superActivityToast = new SuperActivityToast(HomeActivity.this, SuperToast.Type.BUTTON);
+                superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
+                superActivityToast.setText("Item Deleted.");
+                superActivityToast.setButtonIcon(SuperToast.Icon.Dark.UNDO, "UNDO");
+                superActivityToast.setOnClickWrapper(onClickWrapper);
+                superActivityToast.show();
+                return false;
+            }
+        });
+        // Mark an item completed.
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Item item = data.get(i);
+                item.setDate(Calendar.getInstance());
+                DBHelper db = new DBHelper(HomeActivity.this);
+                int newColor = item.getColor();
+                while (newColor == item.getColor())
+                    newColor = ColorPicker.getColor(HomeActivity.this);
+                item.setColor(newColor);
+                db.updateItem(item);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
 
+    private void setUpDrawer() {
+        toolbar.setTitle("Reminders");
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                toolbar.setTitle("Reminders");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                toolbar.setTitle("Navigation");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawerLayout.setDrawerListener(drawerToggle);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
+                getResources().getStringArray(R.array.nav_items)));
+    }
+
+    // ----------------------- For Super Toasts ---------------------------------------------------
+    OnClickWrapper onClickWrapper = new OnClickWrapper("superactivitytoast", new SuperToast.OnClickListener() {
         @Override
         public void onClick(View view, Parcelable token) {
             if (deletedItem != null) {

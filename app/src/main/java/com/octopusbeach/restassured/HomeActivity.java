@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -172,10 +173,13 @@ public class HomeActivity extends ActionBarActivity {
                         if (rl.getVisibility() == View.VISIBLE) {
                             newItem.setIsReminding(true);
                             Calendar c = Calendar.getInstance();
+                            c.setTimeInMillis(System.currentTimeMillis());
                             // Get the time.
                             if (daySpinner.getSelectedItem().toString().equals("Tomorrow"))  // Schedule for tomorrow
-                                c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
+                                c.add(Calendar.DAY_OF_YEAR, 1);
                             c.set(Calendar.HOUR_OF_DAY, getHourForSelection(timeSpinner));
+                            c.set(Calendar.MINUTE, 0);
+                            c.set(Calendar.SECOND, 0);
                             newItem.setRepeatTime(c);
                             createOrCancelAlarm(newItem, true);
                         } else
@@ -206,13 +210,14 @@ public class HomeActivity extends ActionBarActivity {
 
     private int getHourForSelection(Spinner spinner) {
         String time = spinner.getSelectedItem().toString();
+        Log.d("Time", time);
         if (time.equals("Morning"))
             return 8;
         if (time.equals("Afternoon"))
             return 12;
         if (time.equals("Evening"))
             return 16;
-        if (time.equals("Morning"))
+        if (time.equals("Night"))
             return 20;
         return 0;
     }

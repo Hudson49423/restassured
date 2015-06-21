@@ -5,15 +5,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,7 @@ import com.octopusbeach.restassured.model.Item;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
+import java.util.prefs.PreferenceChangeEvent;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -69,6 +70,14 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+        // See if the app has been opened before.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstTime", true)) { // Never been opened.
+            data.add(new Item("Turned Off Stove", ColorPicker.getColor(this)));
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("firstTime", false);
+            editor.apply();
+        }
         manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         setUpDrawer();
         setUpGridView();
@@ -203,6 +212,10 @@ public class HomeActivity extends ActionBarActivity {
     void clearReminders() {
         new DBHelper(this).deleteAllItems();
         adapter.clear();
+        for (Item item : data) {
+            if (item.isReminding())
+                createOrCancelAlarm(item, false);
+        }
         data.clear();
         adapter.notifyDataSetChanged();
         drawerLayout.closeDrawers();
@@ -255,7 +268,6 @@ public class HomeActivity extends ActionBarActivity {
                     adapter.addAll(data);
                 }
                 adapter.notifyDataSetChanged();
-
             }
         });
     }

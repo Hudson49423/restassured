@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.octopusbeach.restassured.model.Item;
@@ -22,7 +23,6 @@ public class GridAdapter extends ArrayAdapter<Item> {
 
     public GridAdapter(Context context, int resource, List<Item> objects) {
         super(context, resource, objects);
-
     }
 
     @Override
@@ -56,6 +56,7 @@ public class GridAdapter extends ArrayAdapter<Item> {
         LayerDrawable bg = (LayerDrawable) v.findViewById(R.id.parent).getBackground();
         GradientDrawable bgShape = (GradientDrawable) bg.findDrawableByLayerId(R.id.background);
         bgShape.setColor(item.getColor());
+        v.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 600));
         return v;
     }
 }

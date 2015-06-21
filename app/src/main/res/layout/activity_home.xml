@@ -27,7 +27,9 @@
                 android:gravity="center"
                 android:horizontalSpacing="2sp"
                 android:numColumns="2"
-                android:verticalSpacing="2sp" />
+                android:verticalSpacing="2sp"
+                android:stretchMode="columnWidth"
+                android:padding="5sp"/>
 
             <LinearLayout
                 android:id="@+id/left_drawer"

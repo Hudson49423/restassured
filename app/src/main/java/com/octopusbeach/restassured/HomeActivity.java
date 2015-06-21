@@ -36,7 +36,6 @@ import com.octopusbeach.restassured.model.Item;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.prefs.PreferenceChangeEvent;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -70,19 +69,29 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
-        // See if the app has been opened before.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("firstTime", true)) { // Never been opened.
-            data.add(new Item("Turned Off Stove", ColorPicker.getColor(this)));
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            editor.putBoolean("firstTime", false);
-            editor.apply();
-        }
         manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         setUpDrawer();
         setUpGridView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToListView(gridView);
+        // See if the app has been opened before.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstTime", true)) { // Never been opened.
+            Item item = new Item("Turned Off Stove", ColorPicker.getColor(this));
+            item.setIsRepeating(true);
+            Item item2 = new Item("Swipe Right for Help!", ColorPicker.getColor(this));
+            item2.setIsRepeating(true);
+            DBHelper db = new DBHelper(HomeActivity.this);
+            db.addItem(item);
+            db.addItem(item2);
+            adapter.clear();
+            data = db.getItems();
+            adapter.addAll(data);
+            adapter.notifyDataSetChanged();
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("firstTime", false);
+            editor.apply();
+        }
     }
 
     @Override

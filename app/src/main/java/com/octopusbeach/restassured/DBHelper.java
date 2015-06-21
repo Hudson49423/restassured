@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
 
 
-    private static final int VERSION = 4;
+    private static final int VERSION = 6;
     private static final String DATABASE_NAME = "itemsdb";
     private static final String TABLE_ITEMS = "items";
     private static final String COLUMN_ID = "_id";

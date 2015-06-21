@@ -28,6 +28,8 @@
     <string name="reminder">Remind Me = Receive a notification when it is time to complete this item</string>
     <string name="remove_all">Clear Reminders</string>
 
+    <string name="alarm_service_label">Don\'t Forget!</string>
+
 
     <string-array name="nav_items">
         <item>Help</item>

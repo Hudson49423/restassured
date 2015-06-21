@@ -1,7 +1,5 @@
 package com.octopusbeach.restassured.model;
 
-import android.content.Context;
-
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -14,6 +12,8 @@ public class Item implements Serializable{
     private int id;
     private int color;
     private boolean isRepeating;
+    private boolean isReminding;
+    private Calendar repeatTime;
 
     public Item(String name, int color) {
         this.name = name;
@@ -58,5 +58,21 @@ public class Item implements Serializable{
 
     public void setIsRepeating(boolean isRepeating) {
         this.isRepeating = isRepeating;
+    }
+
+    public boolean isReminding() {
+        return isReminding;
+    }
+
+    public void setIsReminding(boolean isReminding) {
+        this.isReminding = isReminding;
+    }
+
+    public Calendar getRepeatTime() {
+        return repeatTime;
+    }
+
+    public void setRepeatTime(Calendar repeatTime) {
+        this.repeatTime = repeatTime;
     }
 }

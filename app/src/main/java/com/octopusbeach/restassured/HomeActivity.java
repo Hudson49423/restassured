@@ -1,6 +1,10 @@
 package com.octopusbeach.restassured;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -9,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +35,7 @@ import com.octopusbeach.restassured.model.Item;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,11 +61,15 @@ public class HomeActivity extends ActionBarActivity {
     private GridAdapter adapter;
     private Item deletedItem; // Holds the last delted Item so that it can be readded.
 
+    private AlarmManager manager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+        manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         setUpDrawer();
         setUpGridView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -105,13 +115,13 @@ public class HomeActivity extends ActionBarActivity {
         });
 
         final RelativeLayout rl = (RelativeLayout) v.findViewById(R.id.remind_layout);
-        Spinner daySpinner = (Spinner) v.findViewById(R.id.spinner_day);
+        final Spinner daySpinner = (Spinner) v.findViewById(R.id.spinner_day);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.date_items,
                 android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         daySpinner.setAdapter(spinnerAdapter);
-        Spinner timeSpinner = (Spinner) v.findViewById(R.id.spinner_time);
-        ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this, R.array.time_items,
+        final Spinner timeSpinner = (Spinner) v.findViewById(R.id.spinner_time);
+        final ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this, R.array.time_items,
                 android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
@@ -137,22 +147,60 @@ public class HomeActivity extends ActionBarActivity {
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title))
+                                .getText().toString(), ColorPicker.getColor(HomeActivity.this));
+                        newItem.setIsRepeating(repeatBox.isChecked());
+                        DBHelper db = new DBHelper(HomeActivity.this);
                         if (rl.getVisibility() == View.VISIBLE) {
-                            // TODO this item is reminding.
-                        } else {
-                            Item newItem = new Item(((TextView) v.findViewById(R.id.new_item_title))
-                                    .getText().toString(), ColorPicker.getColor(HomeActivity.this));
-                            newItem.setIsRepeating(repeatBox.isChecked());
-                            DBHelper db = new DBHelper(HomeActivity.this);
-                            db.addItem(newItem);
-                            data = db.getItems();
-                            adapter.clear();
-                            adapter.addAll(data);
-                            adapter.notifyDataSetChanged();
-                        }
+                            newItem.setIsReminding(true);
+                            Calendar c = Calendar.getInstance();
+                            // Get the time.
+                            if (daySpinner.getSelectedItem().toString().equals("Tomorrow"))  // Schedule for tomorrow
+                                c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
+                            //c.set(Calendar.HOUR_OF_DAY, getHourForSelection(timeSpinner));
+                            //TODO remove
+                            c.add(Calendar.SECOND, 10); // For testing.
+                            newItem.setRepeatTime(c);
+                            createOrCancelAlarm(newItem, true);
+                        } else
+                            newItem.setIsReminding(false);
+                        db.addItem(newItem);
+                        data = db.getItems();
+                        adapter.clear();
+                        adapter.addAll(data);
+                        adapter.notifyDataSetChanged();
+
                     }
                 })
                 .show();
+    }
+
+    private void createOrCancelAlarm(Item item, boolean create) {
+        Intent intent = new Intent(HomeActivity.this, AlarmReceiver.class);
+        intent.putExtra("title", item.getName());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, intent, 0);
+        if (create) {
+            if (item.isRepeating()) {
+                //manager.setRepeating(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                //TODO remove
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), 10000, pendingIntent);
+            } else
+                manager.set(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), pendingIntent);
+        } else
+            manager.cancel(pendingIntent);
+    }
+
+    private int getHourForSelection(Spinner spinner) {
+        String time = spinner.getSelectedItem().toString();
+        if (time.equals("Morning"))
+            return 8;
+        if (time.equals("Afternoon"))
+            return 12;
+        if (time.equals("Evening"))
+            return 16;
+        if (time.equals("Morning"))
+            return 20;
+        return 0;
     }
 
     @OnClick(R.id.clear_reminders)
@@ -179,6 +227,9 @@ public class HomeActivity extends ActionBarActivity {
                 data = db.getItems();
                 adapter.addAll(data);
                 adapter.notifyDataSetChanged();
+                // Cancel alarms.
+                if (deletedItem.isReminding())
+                    createOrCancelAlarm(deletedItem, false);
                 SuperActivityToast superActivityToast = new SuperActivityToast(HomeActivity.this, SuperToast.Type.BUTTON);
                 superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
                 superActivityToast.setText("Item Deleted.");
@@ -239,8 +290,6 @@ public class HomeActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-//        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
-//                getResources().getStringArray(R.array.nav_items)));
     }
 
     // ----------------------- For Super Toasts ---------------------------------------------------
@@ -254,6 +303,8 @@ public class HomeActivity extends ActionBarActivity {
                 data = db.getItems();
                 adapter.addAll(data);
                 adapter.notifyDataSetChanged();
+                if (deletedItem.isReminding())
+                    createOrCancelAlarm(deletedItem, true);
             }
         }
 

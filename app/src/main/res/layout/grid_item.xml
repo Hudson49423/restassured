@@ -40,7 +40,6 @@
         android:layout_gravity="center_horizontal"
         android:clickable="false"
         android:padding="4sp"
-        android:text="Today at 1:10 PM"
         android:textColor="@color/primary_material_dark"
         android:textSize="20sp" />
 

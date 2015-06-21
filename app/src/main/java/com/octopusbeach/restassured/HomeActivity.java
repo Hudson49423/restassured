@@ -157,9 +157,7 @@ public class HomeActivity extends ActionBarActivity {
                             // Get the time.
                             if (daySpinner.getSelectedItem().toString().equals("Tomorrow"))  // Schedule for tomorrow
                                 c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
-                            //c.set(Calendar.HOUR_OF_DAY, getHourForSelection(timeSpinner));
-                            //TODO remove
-                            c.add(Calendar.SECOND, 10); // For testing.
+                            c.set(Calendar.HOUR_OF_DAY, getHourForSelection(timeSpinner));
                             newItem.setRepeatTime(c);
                             createOrCancelAlarm(newItem, true);
                         } else
@@ -181,9 +179,7 @@ public class HomeActivity extends ActionBarActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, intent, 0);
         if (create) {
             if (item.isRepeating()) {
-                //manager.setRepeating(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-                //TODO remove
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), 10000, pendingIntent);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
             } else
                 manager.set(AlarmManager.RTC_WAKEUP, item.getRepeatTime().getTimeInMillis(), pendingIntent);
         } else

@@ -287,7 +287,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void setUpDrawer() {
-        toolbar.setTitle("Reminders");
+        toolbar.setTitle("My Dashboard");
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.drawer_open, R.string.drawer_close) {
